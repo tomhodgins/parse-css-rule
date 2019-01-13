@@ -1,0 +1,27 @@
+{
+  "name": "parse-css-rule",
+  "version": "0.0.1",
+  "description": "Parse a string of text as a CSS rule using JavaScript in the browser enviroment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomhodgins/parse-css-rule.git"
+  },
+  "keywords": [
+    "parse",
+    "css",
+    "stylesheet",
+    "style",
+    "sheet",
+    "rule"
+  ],
+  "author": "Tommy Hodgins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomhodgins/parse-css-rule/issues"
+  },
+  "homepage": "https://github.com/tomhodgins/parse-css-rule#readme"
+}
