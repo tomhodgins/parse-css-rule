@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<style>a { --b: c; }</style>
 <title>parse-css-rule tests</title>
+
+<style>a { --b: c; }</style>
 
 <h1>parse-css-rule tests</h1>
 <h2 id=pass>Tests passed:</h2>
@@ -32,49 +33,49 @@
     },
     {
       name: 'Returns a CSSImportRule object',
-      input: () => parseRule(`@import ''`)
+      input: () => parseRule(`@import url("");`)
         .constructor
         .name,
       expected: 'CSSImportRule'
     },
     {
       name: 'Returns a CSSMediaRule object',
-      input: () => parseRule(`@media {}`)
+      input: () => parseRule(`@media { }`)
         .constructor
         .name,
       expected: 'CSSMediaRule'
     },
     {
       name: 'Returns a CSSFontFaceRule object',
-      input: () => parseRule(`@font-face {}`)
+      input: () => parseRule(`@font-face { }`)
         .constructor
         .name,
       expected: 'CSSFontFaceRule'
     },
     {
       name: 'Returns a CSSPageRule object',
-      input: () => parseRule(`@page {}`)
+      input: () => parseRule(`@page { }`)
         .constructor
         .name,
       expected: 'CSSPageRule'
     },
     {
       name: 'Returns a CSSKeyframesRule object',
-      input: () => parseRule(`@keyframes demo {}`)
+      input: () => parseRule(`@keyframes demo { }`)
         .constructor
         .name,
       expected: 'CSSKeyframesRule'
     },
     {
       name: 'Returns a CSSNamespaceRule object',
-      input: () => parseRule(`@namespace ''`)
+      input: () => parseRule(`@namespace url("");`)
         .constructor
         .name,
       expected: 'CSSNamespaceRule'
     },
     {
       name: 'Returns a CSSSupportsRule object',
-      input: () => parseRule(`@supports () {}`)
+      input: () => parseRule(`@supports () { }`)
         .constructor
         .name,
       expected: 'CSSSupportsRule'
@@ -88,37 +89,37 @@
     },
     {
       name: 'Parsed CSSImportRule has type 3',
-      input: () => parseRule(`@import ''`).type,
+      input: () => parseRule(`@import url("");`).type,
       expected: 3
     },
     {
       name: 'Parsed CSSMediaRule object has type 4',
-      input: () => parseRule(`@media {}`).type,
+      input: () => parseRule(`@media { }`).type,
       expected: 4
     },
     {
       name: 'Parsed CSSFontFaceRule object has type 5',
-      input: () => parseRule(`@font-face {}`).type,
+      input: () => parseRule(`@font-face { }`).type,
       expected: 5
     },
     {
       name: 'Parsed CSSPageRule object has type 6',
-      input: () => parseRule(`@page {}`).type,
+      input: () => parseRule(`@page { }`).type,
       expected: 6
     },
     {
       name: 'Parsed CSSKeyframesRule object has type 7',
-      input: () => parseRule(`@keyframes demo {}`).type,
+      input: () => parseRule(`@keyframes demo { }`).type,
       expected: 7
     },
     {
       name: 'Parsed CSSNamespaceRule object has type 10',
-      input: () => parseRule(`@namespace ''`).type,
+      input: () => parseRule(`@namespace url("");`).type,
       expected: 10
     },
     {
       name: 'Parsed CSSSupportsRule object has type 12',
-      input: () => parseRule(`@supports () {}`).type,
+      input: () => parseRule(`@supports () { }`).type,
       expected: 12
     },
 
