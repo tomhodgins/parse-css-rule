@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<style>a { --b: c; }</style>
+<title>parse-css-rule tests</title>
+
+<h1>parse-css-rule tests</h1>
+<h2 id=pass>Tests passed:</h2>
+<ul></ul>
+<h2 id=fail>Tests failed:</h2>
+<ul></ul>
+
+<script type=module>
+  import parseRule from './index.js'
+
+  const tests = [
+
+    // Input testing
+    {
+      name: 'Return undefined if no CSS rule found',
+      input: () => parseRule(''),
+      expected: undefined
+    },
+
+    // Output rule constructor names
+    {
+      name: 'Return a CSSStyleRule object',
+      input: () => parseRule(`a { --b: c; }`)
+        .constructor
+        .name,
+      expected: 'CSSStyleRule'
+    },
+    {
+      name: 'Returns a CSSImportRule object',
+      input: () => parseRule(`@import ''`)
+        .constructor
+        .name,
+      expected: 'CSSImportRule'
+    },
+    {
+      name: 'Returns a CSSMediaRule object',
+      input: () => parseRule(`@media {}`)
+        .constructor
+        .name,
+      expected: 'CSSMediaRule'
+    },
+    {
+      name: 'Returns a CSSFontFaceRule object',
+      input: () => parseRule(`@font-face {}`)
+        .constructor
+        .name,
+      expected: 'CSSFontFaceRule'
+    },
+    {
+      name: 'Returns a CSSPageRule object',
+      input: () => parseRule(`@page {}`)
+        .constructor
+        .name,
+      expected: 'CSSPageRule'
+    },
+    {
+      name: 'Returns a CSSKeyframesRule object',
+      input: () => parseRule(`@keyframes demo {}`)
+        .constructor
+        .name,
+      expected: 'CSSKeyframesRule'
+    },
+    {
+      name: 'Returns a CSSNamespaceRule object',
+      input: () => parseRule(`@namespace ''`)
+        .constructor
+        .name,
+      expected: 'CSSNamespaceRule'
+    },
+    {
+      name: 'Returns a CSSSupportsRule object',
+      input: () => parseRule(`@supports () {}`)
+        .constructor
+        .name,
+      expected: 'CSSSupportsRule'
+    },
+
+    // Output rule types
+    {
+      name: 'Parsed CSSStyleRule has type 1',
+      input: () => parseRule(`a { --b: c; }`).type,
+      expected: 1
+    },
+    {
+      name: 'Parsed CSSImportRule has type 3',
+      input: () => parseRule(`@import ''`).type,
+      expected: 3
+    },
+    {
+      name: 'Parsed CSSMediaRule object has type 4',
+      input: () => parseRule(`@media {}`).type,
+      expected: 4
+    },
+    {
+      name: 'Parsed CSSFontFaceRule object has type 5',
+      input: () => parseRule(`@font-face {}`).type,
+      expected: 5
+    },
+    {
+      name: 'Parsed CSSPageRule object has type 6',
+      input: () => parseRule(`@page {}`).type,
+      expected: 6
+    },
+    {
+      name: 'Parsed CSSKeyframesRule object has type 7',
+      input: () => parseRule(`@keyframes demo {}`).type,
+      expected: 7
+    },
+    {
+      name: 'Parsed CSSNamespaceRule object has type 10',
+      input: () => parseRule(`@namespace ''`).type,
+      expected: 10
+    },
+    {
+      name: 'Parsed CSSSupportsRule object has type 12',
+      input: () => parseRule(`@supports () {}`).type,
+      expected: 12
+    },
+
+    // Compare parsed rule text against rule from CSSOM
+    {
+      name: 'Parsed rule matches the first rule in the first stylesheet',
+      input: () => parseRule(`a { --b: c; }`).cssText,
+      expected: document.styleSheets[0].cssRules[0].cssText
+    },
+
+    // Test properties
+    {
+      name: 'Parsed rule contains one property',
+      input: () => parseRule(`a { --b: c; }`)
+        .style
+        .length,
+      expected: 1
+    },
+    {
+      name: 'Parsed rule contains a property named "color"',
+      input: () => Array.from(parseRule(`a { --b: c; }`).style).includes('--b'),
+      expected: true
+    },
+    {
+      name: 'Parsed property value is "c"',
+      input: () => parseRule(`a { --b: c; }`)
+        .style
+        .getPropertyValue('--b')
+        .trim(),
+      expected: `c`
+    },
+    {
+      name: 'Parsed rule contains a CSS variable',
+      input: () => Array.from(parseRule(`a { --b: c; }`).style).some(name => name.startsWith('--')),
+      expected: true
+    },
+
+    // Selector testing
+    {
+      name: 'Parsed selector list is: a:not(b), c[and="d"]',
+      input: () => parseRule(`a:not(b), c[and="d"] { color: red }`).selectorText,
+      expected: `a:not(b), c[and="d"]`
+    }
+  ]
+
+  const results = tests.reduce((acc, test) => {
+      test.result = test.input()
+      test.result === test.expected
+        ? acc.pass.push(test)
+        : acc.fail.push(test)
+      return acc
+    },
+    {pass: [], fail: []}
+  )
+
+  const passed = results.pass.length
+  const failed = results.fail.length
+  const total = passed + failed
+
+// populate results to page
+document.querySelector('#pass').textContent = `Tests passed ${passed}/${total}:`
+  document.querySelector('#fail').textContent = `Tests failed ${failed}/${total}:`
+
+  results.pass.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary>${test.name}</summary>
+        <h3>Test</h3>
+        <p><pre>${test.input.toString()}</pre></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#pass + ul').appendChild(tag)
+  })
+
+  results.fail.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary style=text-decoration:line-through>${test.name}</summary>
+        <h3>Test</h3>
+        <p><code>${test.input.toString().slice(6)}</code></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#fail + ul').appendChild(tag)
+  })
+</script>
